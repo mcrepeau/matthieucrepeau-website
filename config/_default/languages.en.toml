@@ -1,0 +1,25 @@
+# config/_default/languages.en.toml
+
+languageCode = "en-US"
+languageName = "English"
+languageDirection = "ltr"
+weight = 1
+
+title = "Matthieu Crépeau"
+copyright = "&copy; 2024 Matthieu Crépeau"
+
+[params]
+  dateFormat = "2 January 2006"
+
+  mainSections = ["samples"]
+  description = "A powerful, lightweight theme for Hugo built with Tailwind CSS."
+
+[params.author]
+  name = "Matthieu Crépeau"
+  image = "img/profile_pic.jpg"
+  headline = "Chicago-based software engineer"
+  bio = ""
+  links = [
+    { linkedin = "https://www.linkedin.com/in/matthieucrepeau/" },
+    { github = "https://github.com/mcrepeau" }
+  ]
