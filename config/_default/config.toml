@@ -1,4 +1,4 @@
 # config/_default/config.toml
 
-baseURL = "https://matthieucrepeau.com/"
+baseURL = "https://www.matthieucrepeau.com/"
 languageCode = "en"
