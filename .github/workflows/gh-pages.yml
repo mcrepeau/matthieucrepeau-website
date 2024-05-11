@@ -23,11 +23,17 @@ jobs:
           hugo-version: '0.125.5'
           extended: true
 
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages # Checkout to a different directory
+
       - name: Build
         run: hugo --minify
 
       - name: Preserve CNAME
-        run: cp CNAME public/
+        run: cp gh-pages/CNAME public/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
