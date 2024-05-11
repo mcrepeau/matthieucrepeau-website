@@ -15,7 +15,9 @@
   const pdfUrl = '{{ .Page.Params.pdf_url }}';
 
   // Fetch the PDF document
-  pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+  pdfjsLib.getDocument({
+    url: pdfUrl
+  }).promise.then(pdf => {
     // Render the first page
     pdf.getPage(1).then(page => {
       const scale = 1.5;
