@@ -1,5 +1,40 @@
+<!-- Spinner CSS -->
+<style>
+  .spinner {
+    border: 8px solid #f3f3f3; /* Half the size */
+    border-top: 8px solid #3498db; /* Half the size */
+    border-radius: 50%;
+    width: 60px; /* Half the size */
+    height: 60px; /* Half the size */
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Center the spinner */
+  #loading-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height of the viewport */
+    position: fixed; /* Fixed position */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    width: 100%; /* Full width */
+    background: rgba(255, 255, 255, 0.8); /* White background with some transparency */
+  }
+  </style>
+
 <!-- Container for the PDF -->
 <div id="pdf-container"></div>
+
+<!-- Loading message -->
+<div id="loading-message">
+  <div class="spinner"></div>
+</div>
 
 <!-- Include PDF.js library from CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -51,6 +86,7 @@
           textLayer.render();
           document.getElementById('pdf-container').appendChild(textLayerDiv);
         });
+        document.getElementById('loading-message').style.display = 'none';
       });
     });
   });
