@@ -36,66 +36,46 @@
   <div class="spinner"></div>
 </div>
 
-<!-- Include PDF.js library from CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-<!-- Set worker URL for PDF.js -->
-<script>
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-</script>
-
 <!-- JavaScript code to load and render the PDF -->
-<script>
-  // Path to your PDF file (assuming you specify the PDF URL in the page front matter)
+<script type="module">
+  import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@5.5.207/build/pdf.min.mjs';
+
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@5.5.207/build/pdf.worker.min.mjs';
+
   const pdfUrl = '{{ .Page.Params.pdf_url }}';
 
+  // Expose download function to global scope for HTML onclick handlers
+  window.downloadPDF = function() {
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = 'matthieu-crepeau-resume.pdf';
+    link.click();
+  };
+
   // Fetch the PDF document
-  pdfjsLib.getDocument({
-    url: pdfUrl
-  }).promise.then(pdf => {
-    // Render the first page
+  pdfjsLib.getDocument({ url: pdfUrl }).promise.then(pdf => {
     pdf.getPage(1).then(page => {
       const scale = 1.5;
       const viewport = page.getViewport({ scale });
 
-      // Prepare canvas using PDF page dimensions
+      const dpr = window.devicePixelRatio || 1;
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+      canvas.width = viewport.width * dpr;
+      canvas.height = viewport.height * dpr;
+      canvas.style.width = viewport.width + 'px';
+      canvas.style.height = viewport.height + 'px';
+      context.scale(dpr, dpr);
 
-      // Render PDF page into canvas context
-      const renderContext = {
-        canvasContext: context,
-        viewport: viewport
-      };
-      page.render(renderContext).promise.then(() => {
-        // Append canvas to PDF container
+      page.render({ canvasContext: context, viewport }).promise.then(() => {
         document.getElementById('pdf-container').appendChild(canvas);
-        
-        // Enable text selection
-        page.getTextContent().then(textContent => {
-          const textLayerDiv = document.createElement('div');
-          textLayerDiv.className = 'textLayer';
-          const textLayer = new TextLayerBuilder({
-            textLayerDiv,
-            pageIndex: 0,
-            viewport: viewport
-          });
-          textLayer.setTextContent(textContent);
-          textLayer.render();
-          document.getElementById('pdf-container').appendChild(textLayerDiv);
-        });
+
+        const textLayerDiv = document.createElement('div');
+        textLayerDiv.className = 'textLayer';
+        document.getElementById('pdf-container').appendChild(textLayerDiv);
+
         document.getElementById('loading-message').style.display = 'none';
       });
     });
   });
-
-  // Function to trigger PDF download
-  function downloadPDF() {
-    const link = document.createElement('a');
-    link.href = pdfUrl; // Set the PDF URL
-    link.download = 'matthieu-crepeau-resume.pdf'; // Set the filename for download
-    link.click();
-  }
 </script>
