@@ -1,6 +1,6 @@
 ---
 title: "Implementing the CubeHash hashing algorithm in Rust"
-date: 2025-09-19
+date: 2026-03-10
 tags: ["rust", "hashing", "cryptography", "algorithms"]
 ---
 
@@ -164,7 +164,7 @@ let digest = hash.finalize();
 ```
 and we don't need to allocate the memory required to store the whole string if we don't want to.
 
-And, for convenience, we can also define a digest method which handles the creation/update/finalization under the hood:
+For convenience, we can also define a digest method which handles the creation/update/finalization under the hood:
 
 ```Rust
 let digest = CubeHash::digest(b"hello world");
@@ -185,7 +185,7 @@ in order to use the AVX2 implementation if the target architecture supports it, 
 
 #### AVX2
 
-With AVX2 the width of the SIMD registers is increased from 128 bits to 256 bits, we could just keep the structure the same by replacing the 128-bit instructions with 256-bit ones and still get some performance benefit thanks to the compiler optimization but that would mean grossly underutilizing the 256-bit registers. These 256-bit instructions bring some interesting opportunities for speed improvements if we are willing to make some code changes -- the idea being that we can pack two 128-bit values into one 256-bit register and run operations on the whole thing, reducing the number of instructions necessary to perform each step.
+With AVX2, the width of the SIMD registers is increased from 128 bits to 256 bits, we could just keep the structure the same by replacing the 128-bit instructions with 256-bit ones and still get some performance benefit thanks to the compiler optimization but that would mean grossly underutilizing the 256-bit registers. These 256-bit instructions bring some interesting opportunities for speed improvements if we are willing to make some code changes -- the idea being that we can pack two 128-bit values into one 256-bit register and run operations on the whole thing, reducing the number of instructions necessary to perform each step.
 
 For example, it means that the Add + Shuffle goes from:
 ```Rust
@@ -426,7 +426,7 @@ But even if we use CubeHash with 128-bit SIMD as the basis for comparison, it st
 ### Conclusion
 
 The goal of this exercise, beyond the learning experience, was to see if I could write a hashing algorithm in Rust from scratch that could both match (or exceed) the performance of its reference implementation and also be competitive over readily available SHA3-256 alternatives.
-On a PC, we have proven that this is the case, I have actually implemented something that could reasonably be used for small or large file hashing and I have decided to package it as a [library published on Crates.io](https://crates.io/crates/cubehash) with east-to-use wrapper methods.
+On a PC, we have proven that this is the case, I have actually implemented something that could reasonably be used for both small or large file hashing and I have decided to package it as a [library published on Crates.io](https://crates.io/crates/cubehash) with east-to-use wrapper methods.
 
 You can also find the code [here](https://github.com/mcrepeau/cubehash)
 
